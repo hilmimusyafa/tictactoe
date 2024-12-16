@@ -18,7 +18,7 @@ struct player {
     user nowpPlay;
 };
 
-int mainScreen () {
+int mainScreen() {
     cout << "================================" << endl;
     cout << "      APLIKASI TIC TAC TOE      " << endl;
     cout << "================================" << endl;
@@ -64,20 +64,23 @@ bool isWinner(board b, string player) {
 }
 
 bool isFull(board b) {
-    int counterLoopX = 0, counterLoopY = 0;
-
-    while (counterLoopX < 3) {
-        while (counterLoopY) {
-            if (b.chart[counterLoopX][counterLoopY] == " ") {
-                return false;
+    for (int i = 0; i < 3; i++) { 
+        for (int j = 0; j < 3; j++) { 
+            if (b.chart[i][j] == " ") {
+                return false; 
             }
-            counterLoopY = counterLoopY + 1;
         }
-        counterLoopX = counterLoopX + 1;
     }
-    return true;
+    return true; 
 }
 
+void clearBoard(board &b) {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            b.chart[i][j] = " ";
+        }
+    }
+}
 void playDesicionMaker(string userInput, string &playerHuman, string &playerBot) {
     if (userInput == "X") {
         playerHuman = "X";
@@ -102,7 +105,7 @@ void sequentialEngine(board &b, string stringValue) {
 }
 
 void recursiveEngine(board &b, string stringValue) {
-
+    
 }
 
 void playSequential(board &b) {
@@ -113,11 +116,11 @@ void playSequential(board &b) {
     bool isPlayerWin = false, isBotWin = false, isLocationFilled;
     int chunkLocationX, chunkLocationY;
 
-    cout << "Pilih anda ingin X atau O : " << endl;
+    cout << "Pilih anda ingin X atau O : ";
     cin >> chunkChoose;
 
-    while (chunkChoose != "X" || chunkChoose == "O") {
-        cout << "Tidak Valid! Pastikan anda memilih antara X atau O";
+    while (chunkChoose != "X" && chunkChoose != "O") {
+        cout << "Tidak Valid! Pastikan anda memilih antara X atau O : ";
         cin >> chunkChoose;
     }
 
@@ -125,14 +128,15 @@ void playSequential(board &b) {
     srand(time(0));
     whoIs.nowpPlay = (rand() % 2 == 0) ? playerHuman : playerBot; 
 
-    while (isPlayerWin != true || isBotWin != true || isFull(b) != true) {
+    while (!isPlayerWin && !isBotWin && !isFull(b)) {
+        cout << endl;
         printBoard(b);
         if (whoIs.nowpPlay.stringValue == playerHuman.stringValue) {
             cout << "========== Giliran kamu ==========" << endl;
 
             cout << "Masukkan lokasi yang ingin diisi (X,Y) : ";
             cin >> chunkLocationX >> chunkLocationY;
-            
+
             while (chunkLocationX < 1 || chunkLocationX > 3 || chunkLocationY < 1 || chunkLocationY > 3 || isFilled(b, chunkLocationX - 1, chunkLocationY - 1)) {
                 cout << "Input tidak valid atau lokasi sudah terisi. Masukkan ulang (X,Y) (-3): ";
                 cin >> chunkLocationX >> chunkLocationY;
@@ -142,10 +146,6 @@ void playSequential(board &b) {
             
             isPlayerWin = isWinner(b, whoIs.nowpPlay.stringValue);
 
-            if (isPlayerWin == true) {
-                break;
-            }
-
             whoIs.nowpPlay = playerBot;  
         } else {
             cout << "========== Giliran Bot ==========" << endl;
@@ -154,9 +154,6 @@ void playSequential(board &b) {
 
             isBotWin = isWinner(b, whoIs.nowpPlay.stringValue);
 
-            if (isBotWin == true) {
-                break;
-            }
             whoIs.nowpPlay = playerHuman;
         }
     }
@@ -169,6 +166,8 @@ void playSequential(board &b) {
     } else {
         cout << "Permainan seri!\n";
     }
+
+    clearBoard(b);
 }
 
 void playRecursive(board b) {
@@ -179,13 +178,14 @@ void playRecursive(board b) {
     bool isPlayerWin = false, isBotWin = false, isLocationFilled;
     int chunkLocationX, chunkLocationY;
 
-    cout << "Pilih anda ingin X atau O : " << endl;
+    cout << "Pilih anda ingin X atau O : ";
     cin >> chunkChoose;
 
-    while (chunkChoose != "X" || chunkChoose == "O") {
-        cout << "Tidak Valid! Pastikan anda memilih antara X atau O";
+    while (chunkChoose != "X" || chunkChoose != "O") {
+        cout << "Tidak Valid! Pastikan anda memilih antara X atau O : ";
         cin >> chunkChoose;
     }
+    
     playDesicionMaker(chunkChoose, playerHuman.stringValue, playerBot.stringValue);
     srand(time(0));
     whoIs.nowpPlay = (rand() % 2 == 0) ? playerHuman : playerBot; 
@@ -199,7 +199,7 @@ void playRecursive(board b) {
             cin >> chunkLocationX >> chunkLocationY;
             
             while (chunkLocationX < 1 || chunkLocationX > 3 || chunkLocationY < 1 || chunkLocationY > 3 || isFilled(b, chunkLocationX - 1, chunkLocationY - 1)) {
-                cout << "Input tidak valid atau lokasi sudah terisi. Masukkan ulang (X,Y) (-3): ";
+                cout << "Input tidak valid atau lokasi sudah terisi. Masukkan ulang (X,Y) (1-3): ";
                 cin >> chunkLocationX >> chunkLocationY;
             }
 
@@ -234,11 +234,17 @@ void playRecursive(board b) {
     } else {
         cout << "Permainan seri!\n";
     }
+
+    clearBoard(b);
 }
 
-void playHuman(board b) {
+// void playHuman(board b) {
+//     string chunkPlayDesicion;
 
-}
+//     cout << "Masukkan X atau O untuk player 1 : "
+//     cin >> chunkPlayDesicion;
+    
+// }
 
 int main() {
     board boardDatabase;
