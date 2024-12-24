@@ -19,7 +19,7 @@ This repository contents :
 1. Code
 2. Research Dump
 3. Research Report Paper
-1. 
+
 ## Prerequisite 
 
 To run this C++ code, you will need the following prerequisites:
