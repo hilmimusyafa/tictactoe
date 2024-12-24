@@ -617,6 +617,7 @@ void playRecursive(selectedBoard &b) {
     bool isPlayerWin = false, isBotWin = false;
 
     cout << "Masukkan ukuran board yang diinginkan (3/4/5) : ";
+    cout << "Recursive Play didn't recommend for 4x4 or more board" << endl;
     cin >> chunkBoard;
 
     while (chunkBoard != 3 && chunkBoard != 4 && chunkBoard != 5) {
