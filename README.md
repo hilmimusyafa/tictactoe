@@ -1,6 +1,6 @@
-# tictactoe
-
 # Tic Tac Toe (with Algorithm Engine)
+
+![Github Banner](https://hackmd.io/_uploads/HJSN0murJl.png)
 
 ## Description 
 
