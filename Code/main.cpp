@@ -1,6 +1,8 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <fstream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -67,6 +69,8 @@ int mainScreen() {
     cout << "1. Bermain dengan Bot Iteratif " << endl;
     cout << "2. Bermain denghan Bot Rekursif " << endl;
     cout << "3. Bermain sesama manusia " << endl;
+    cout << "4. Uji coba eksekusi waktu algoritma" << endl;
+    cout << "5. Uji coba eksekusi waktu rekursif" << endl;
     cout << "0. Exit " << endl;
 
     return 0;
@@ -670,9 +674,18 @@ void playRecursive(selectedBoard &b) {
             cout << "========== Giliran Bot ==========" << endl;
             cout << "Bot sedang berpikir !! " << endl;
 
-            // std::this_thread::sleep_for(std::chrono::seconds(1 + rand() % 4));
-
+            
+            auto start = std::chrono::high_resolution_clock::now();
             recursiveEngine(b, playerBot.stringValue, playerHuman.stringValue);
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double> duration = end - start;
+            cout << "Bot berpikir selama " << duration.count() << " detik." << endl;
+
+            static double durationArray[100]; // Assuming a maximum of 100 moves
+            static int moveCount = 0;
+            if (moveCount < 100) {
+                durationArray[moveCount++] = duration.count();
+            }
 
             isBotWin = isWinner(b, whoIs.nowpPlay.stringValue);
             whoIs.nowpPlay = playerHuman;
@@ -797,6 +810,104 @@ void playHuman(selectedBoard b) {
     b.boardSize = 0;
 }
 
+#include <fstream>
+
+void testRunningtimeIterative(selectedBoard b) {
+    user playerBot1, playerBot2;
+    player whoIs;
+    bool isBot1Win = false, isBot2Win = false;
+
+    b.boardSize = 3; // Set board size to 3x3
+
+    playerBot1.stringValue = "X";
+    playerBot2.stringValue = "O";
+
+    srand(time(0));
+    whoIs.nowpPlay = (rand() % 2 == 0) ? playerBot1 : playerBot2;
+
+    while (!isBot1Win && !isBot2Win && !isFull(b)) {
+        cout << endl;
+        printBoard(b);
+        cout << "========== Giliran " << (whoIs.nowpPlay.stringValue == playerBot1.stringValue ? "Bot 1" : "Bot 2") << " ==========" << endl;
+        cout << "Bot sedang berpikir !! " << endl;
+
+        auto start = std::chrono::high_resolution_clock::now();
+        iterativeEngine(b, whoIs.nowpPlay.stringValue);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration = end - start;
+        cout << "Bot berpikir selama " << duration.count() << " detik." << endl;
+
+        if (whoIs.nowpPlay.stringValue == playerBot1.stringValue) {
+            isBot1Win = isWinner(b, whoIs.nowpPlay.stringValue);
+            whoIs.nowpPlay = playerBot2;
+        } else {
+            isBot2Win = isWinner(b, whoIs.nowpPlay.stringValue);
+            whoIs.nowpPlay = playerBot1;
+        }
+    }
+
+    printBoard(b);
+    if (isBot1Win) {
+        cout << "Bot 1 menang!\n";
+    } else if (isBot2Win) {
+        cout << "Bot 2 menang!\n";
+    } else {
+        cout << "Permainan seri!\n";
+    }
+
+    clearBoard(b);
+    b.boardSize = 0;
+}
+
+
+void testRunningtimeRecursive(selectedBoard b) {
+    user playerBot1, playerBot2;
+    player whoIs;
+    bool isBot1Win = false, isBot2Win = false;
+
+    b.boardSize = 3; // Set board size to 3x3
+
+    playerBot1.stringValue = "X";
+    playerBot2.stringValue = "O";
+
+    srand(time(0));
+    whoIs.nowpPlay = (rand() % 2 == 0) ? playerBot1 : playerBot2;
+
+
+    while (!isBot1Win && !isBot2Win && !isFull(b)) {
+        cout << endl;
+        printBoard(b);
+        cout << "========== Giliran " << (whoIs.nowpPlay.stringValue == playerBot1.stringValue ? "Bot 1" : "Bot 2") << " ==========" << endl;
+        cout << "Bot sedang berpikir !! " << endl;
+
+        auto start = std::chrono::high_resolution_clock::now();
+        recursiveEngine(b, whoIs.nowpPlay.stringValue, (whoIs.nowpPlay.stringValue == playerBot1.stringValue ? playerBot2.stringValue : playerBot1.stringValue));
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration = end - start;
+        cout << "Bot berpikir selama " << duration.count() << " detik." << endl;
+
+        if (whoIs.nowpPlay.stringValue == playerBot1.stringValue) {
+            isBot1Win = isWinner(b, whoIs.nowpPlay.stringValue);
+            whoIs.nowpPlay = playerBot2;
+        } else {
+            isBot2Win = isWinner(b, whoIs.nowpPlay.stringValue);
+            whoIs.nowpPlay = playerBot1;
+        }
+    }
+
+    printBoard(b);
+    if (isBot1Win) {
+        cout << "Bot 1 menang!\n";
+    } else if (isBot2Win) {
+        cout << "Bot 2 menang!\n";
+    } else {
+        cout << "Permainan seri!\n";
+    }
+
+    clearBoard(b);
+    b.boardSize = 0;
+}
+
 /* ========================== Main Program ========================== */
 
 int main() {
@@ -814,8 +925,16 @@ int main() {
             playRecursive(boardDatabase);
         } else if (serviceCode == 3) {
             playHuman(boardDatabase);
+        } else if (serviceCode == 4) {
+            testRunningtimeIterative(boardDatabase);
+        } else if (serviceCode == 5) {
+            testRunningtimeRecursive(boardDatabase);
+        } else if (serviceCode == 0) {
+            cout << "Terima kasih telah menggunakan aplikasi ini!" << endl;
+        } else {
+            cout << "Input tidak valid! Masukkan menu aplikasi yang benar." << endl;
         }
     }
-
+    
     return 0;
 }
