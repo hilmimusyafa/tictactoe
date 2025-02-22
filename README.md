@@ -59,14 +59,6 @@ The original code is licensed as follows:
 
 - Users are permitted to **take**, **use**, and **modify** parts of the code in accordance with applicable terms, while respecting copyright and providing attribution to the original owner.
 
-Modifications made by contributors do not alter the original copyright for the unmodified parts of the code.
-
-This license includes the following:
-- Users are allowed to modify this code for both personal and commercial purposes, as long as clear attribution is given to the original owner (Eko Kurniawan Khannedy).
-- No warranties are provided for the use of this code, whether for specific purposes or other functionalities.
-
-For further inquiries regarding this license, please contact the original owner or repository contributors.
-
 ## Contributing
 
 If you would like to contribute to this branch, please follow these guidelines:
